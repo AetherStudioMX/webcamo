@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00717a">
+  <meta name="description" content="Reporta una incidencia en tu residencial, consulta su seguimiento y mantente en contacto con el equipo de CAMO.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Atención residencial | CAMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tickets.css">
+  <script src="assets/js/vendor/supabase.js" defer></script>
+  <script src="assets/js/config.js" defer></script>
+  <script src="assets/js/tickets-core.js" defer></script>
+  <script src="assets/js/tickets.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#portal">Ir a atención residencial</a>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="icon-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6 6-6-6 6-6"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 21v-8h6v8"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M21 11.5a9 9 0 0 1-13.3 8L3 21l1.5-4.7A9 9 0 1 1 21 11.5Z"/><path d="M8 10h8M8 14h5"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7Z"/><path d="m8 12 3 3 5-5"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 17.9 17"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand-link" aria-label="CAMO Administración Residencial, ir al inicio">
+        <img src="assets/images/logo-camo.png" alt="CAMO Administración Residencial" width="1024" height="376">
+      </a>
+      <span class="header-divider" aria-hidden="true"></span>
+      <span class="header-label">Atención residencial</span>
+      <a href="index.html" class="back-link">Volver al sitio <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a>
+    </div>
+  </header>
+
+  <main id="portal" class="portal-shell">
+    <div class="portal-intro">
+      <div>
+        <p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span>Estamos para ayudarte</p>
+        <h1>Tu residencial,<br class="mobile-break"> en buenas manos.</h1>
+        <p class="intro-description">Cuéntanos qué sucede. Nosotros le damos seguimiento.</p>
+      </div>
+      <div class="connection-status" role="status">
+        <span class="connection-dot" aria-hidden="true"></span>
+        <span id="connection-label">Conectando con atención residencial…</span>
+      </div>
+    </div>
+
+    <noscript><p class="feedback feedback-error">Activa JavaScript para enviar y consultar reportes. También puedes comunicarte con CAMO al <a href="tel:+526142161556">614 216 1556</a>.</p></noscript>
+    <div id="global-feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+
+    <div class="portal-tabs" role="tablist" aria-label="Atención residencial">
+      <button id="tab-new" class="portal-tab" type="button" role="tab" aria-selected="true" aria-controls="view-new" data-view="new">
+        <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span>Nuevo reporte</span><span class="tab-index" aria-hidden="true">01</span>
+      </button>
+      <button id="tab-track" class="portal-tab" type="button" role="tab" aria-selected="false" aria-controls="view-track" data-view="track" tabindex="-1">
+        <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg><span>Mi seguimiento</span><span class="tab-index" aria-hidden="true">02</span>
+      </button>
+      <button id="tab-admin" class="portal-tab" type="button" role="tab" aria-selected="false" aria-controls="view-admin" data-view="admin" tabindex="-1">
+        <svg class="icon" aria-hidden="true"><use href="#icon-grid"></use></svg><span>Administración</span><span class="tab-index" aria-hidden="true">03</span>
+      </button>
+    </div>
+
+    <section id="view-new" class="view-panel" role="tabpanel" aria-labelledby="tab-new" tabindex="0">
+      <div class="report-layout">
+        <div class="form-area">
+          <div class="section-heading">
+            <span class="section-marker" aria-hidden="true"><svg class="icon"><use href="#icon-plus"></use></svg></span>
+            <div><h2>¿En qué podemos ayudarte?</h2><p>Completa los datos para hacer llegar tu reporte al equipo.</p></div>
+          </div>
+
+          <form id="report-form">
+            <fieldset id="report-fields" class="form-fields" disabled>
+              <legend class="sr-only">Información del reporte</legend>
+              <div class="form-section-label"><span>01</span> Tu residencial y tus datos</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="report-property">Residencial <span class="required-mark" aria-hidden="true">*</span></label>
+                  <select id="report-property" name="property_id" required><option value="">Selecciona tu residencial</option></select>
+                </div>
+                <div class="field">
+                  <label for="report-unit">Casa o departamento <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input id="report-unit" name="unit" type="text" maxlength="50" autocomplete="address-line2" placeholder="Ej. Casa 24 o Torre A, 302" required>
+                </div>
+                <div class="field">
+                  <label for="report-name">Nombre completo <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input id="report-name" name="resident_name" type="text" minlength="2" maxlength="100" autocomplete="name" placeholder="¿Cómo te llamas?" required>
+                </div>
+                <div class="field">
+                  <label for="report-phone">Teléfono / WhatsApp <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input id="report-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="Ej. 614 123 4567" aria-describedby="report-phone-hint" required>
+                  <p id="report-phone-hint" class="field-hint">Lo necesitarás para consultar tu reporte.</p>
+                </div>
+              </div>
+              <div class="form-section-label"><span>02</span> Cuéntanos qué sucede</div>
+              <div class="field">
+                <label for="report-category">Tipo de incidencia <span class="required-mark" aria-hidden="true">*</span></label>
+                <select id="report-category" name="category" required>
+                  <option value="">Selecciona una categoría</option>
+                  <option value="alumbrado">Alumbrado</option>
+                  <option value="accesos">Accesos y seguridad</option>
+                  <option value="agua">Agua y fugas</option>
+                  <option value="areas-verdes">Áreas verdes</option>
+                  <option value="elevadores">Elevadores</option>
+                  <option value="ruido">Ruido y convivencia</option>
+                  <option value="limpieza">Limpieza</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <fieldset class="urgency-fieldset">
+                <legend>Prioridad <span class="required-mark" aria-hidden="true">*</span></legend>
+                <div class="urgency-options">
+                  <label class="urgency-option"><input type="radio" name="urgency" value="normal" checked required><span class="urgency-choice"><span class="urgency-option-title"><span class="priority-dot priority-normal" aria-hidden="true"></span>Normal</span><span class="urgency-caption">Atención habitual</span></span></label>
+                  <label class="urgency-option"><input type="radio" name="urgency" value="alta"><span class="urgency-choice"><span class="urgency-option-title"><span class="priority-dot priority-high" aria-hidden="true"></span>Alta</span><span class="urgency-caption">Afecta el día a día</span></span></label>
+                  <label class="urgency-option"><input type="radio" name="urgency" value="urgente"><span class="urgency-choice"><span class="urgency-option-title"><span class="priority-dot priority-urgent" aria-hidden="true"></span>Urgente</span><span class="urgency-caption">Requiere pronta atención</span></span></label>
+                </div>
+              </fieldset>
+              <div class="field">
+                <label for="report-description">Descripción <span class="required-mark" aria-hidden="true">*</span></label>
+                <textarea id="report-description" name="description" rows="4" minlength="10" maxlength="4000" placeholder="¿Qué ocurrió y en qué lugar? Incluye detalles que nos ayuden a atenderlo." aria-describedby="description-hint" required></textarea>
+                <p id="description-hint" class="field-hint">Incluye la ubicación y desde cuándo sucede. Mínimo 10 caracteres.</p>
+              </div>
+              <div class="honeypot" aria-hidden="true"><label for="report-website">Sitio web</label><input id="report-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+              <p id="report-error" class="feedback feedback-error" role="alert" hidden></p>
+              <div class="form-submit-row">
+                <p class="required-note">Los campos con <span aria-hidden="true">*</span> son obligatorios.</p>
+                <button id="report-submit" class="button button-primary" type="submit">Enviar reporte <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+              </div>
+              <p class="privacy-note"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>Usamos tus datos de contacto para atender y dar seguimiento a tu reporte.</span></p>
+            </fieldset>
+          </form>
+
+          <div id="report-success" class="success-panel" tabindex="-1" hidden>
+            <span class="success-icon" aria-hidden="true"><svg class="icon"><use href="#icon-check"></use></svg></span>
+            <p class="eyebrow">Reporte recibido</p>
+            <h2>Ya estamos al tanto.</h2>
+            <p>Tu reporte quedó registrado. Guarda este folio para consultar las novedades.</p>
+            <div class="folio-receipt"><span class="receipt-label">Tu folio de seguimiento</span><strong id="success-folio"></strong><span id="success-date" class="receipt-date"></span><button id="success-copy" type="button" class="button button-secondary button-small"><svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg>Copiar folio</button></div>
+            <p class="field-hint">En “Mi seguimiento” ingresa este folio y el teléfono que registraste.</p>
+            <div class="success-actions"><a id="success-whatsapp" class="button button-primary" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#icon-chat"></use></svg>Compartir por WhatsApp</a><button id="report-again" type="button" class="button button-ghost">Crear otro reporte</button></div>
+          </div>
+        </div>
+
+        <aside class="service-aside" aria-label="Cómo atendemos tu reporte">
+          <div class="aside-symbol" aria-hidden="true"><svg class="icon"><use href="#icon-home"></use></svg><span></span></div>
+          <p class="eyebrow">Cuidamos tu comunidad</p>
+          <h2>De tu reporte<br>a la solución.</h2>
+          <p class="aside-intro">Un espacio para escucharte y mantenerte al tanto de lo que ocurre.</p>
+          <ol class="service-steps">
+            <li><span class="step-number">1</span><div><h3>Nos cuentas</h3><p>Describe la incidencia y su ubicación.</p></div></li>
+            <li><span class="step-number">2</span><div><h3>Le damos seguimiento</h3><p>El equipo revisa tu reporte y registra los avances.</p></div></li>
+            <li><span class="step-number">3</span><div><h3>Te mantienes al tanto</h3><p>Consulta las novedades con tu folio y teléfono.</p></div></li>
+          </ol>
+          <div class="aside-contact"><svg class="icon" aria-hidden="true"><use href="#icon-chat"></use></svg><div><p>¿Necesitas orientación?</p><a href="https://wa.me/526142161556" target="_blank" rel="noopener noreferrer">Habla con CAMO <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg></a></div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="view-track" class="view-panel" role="tabpanel" aria-labelledby="tab-track" tabindex="0" hidden>
+      <div class="tracking-layout">
+        <div class="tracking-heading"><span class="section-marker" aria-hidden="true"><svg class="icon"><use href="#icon-search"></use></svg></span><p class="eyebrow">Cada avance, a tu alcance</p><h2>Consulta tu reporte.</h2><p>Ingresa tu folio y el teléfono completo que registraste para ver su estado y las actualizaciones del equipo.</p><div class="privacy-caption"><svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg><span>Pedimos ambos datos para proteger la privacidad de tu reporte.</span></div></div>
+        <form id="track-form" class="tracking-form">
+          <div class="field"><label for="track-folio">Folio de seguimiento</label><input id="track-folio" name="folio" type="text" maxlength="64" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CAMO-2026-…" aria-describedby="track-folio-hint" required><p id="track-folio-hint" class="field-hint">Lo recibiste al enviar tu reporte.</p></div>
+          <div class="field"><label for="track-phone">Teléfono registrado</label><input id="track-phone" name="phone" type="tel" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="Ej. 614 123 4567" required></div>
+          <p id="track-error" class="feedback feedback-error" role="alert" hidden></p>
+          <button class="button button-primary button-full" type="submit">Consultar seguimiento <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+        </form>
+      </div>
+      <div id="track-result" class="tracking-result" aria-live="polite" hidden></div>
+    </section>
+
+    <section id="view-admin" class="view-panel" role="tabpanel" aria-labelledby="tab-admin" tabindex="0" hidden>
+      <div id="admin-gate" class="admin-gate">
+        <div class="admin-gate-heading"><span class="section-marker" aria-hidden="true"><svg class="icon"><use href="#icon-lock"></use></svg></span><p class="eyebrow">Equipo CAMO</p><h2>Todo en orden.<br>Todos al tanto.</h2><p>Accede para revisar los reportes de tus residenciales y compartir avances con los residentes.</p><span class="access-note"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>Acceso para personal autorizado</span></div>
+        <form id="login-form" class="login-form">
+          <h3>Iniciar sesión</h3>
+          <div class="field"><label for="login-email">Correo electrónico</label><input id="login-email" name="email" type="email" autocomplete="username" maxlength="254" placeholder="tu@correo.com" required></div>
+          <div class="field"><label for="login-password">Contraseña</label><input id="login-password" name="password" type="password" autocomplete="current-password" required></div>
+          <p id="login-error" class="feedback feedback-error" role="alert" hidden></p>
+          <button class="button button-primary button-full" type="submit">Entrar a administración <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+          <p class="field-hint">Si necesitas acceso, contacta a la administración de CAMO.</p>
+        </form>
+      </div>
+
+      <div id="admin-dashboard" class="admin-dashboard" hidden>
+        <div class="dashboard-heading"><div><p class="eyebrow">Administración</p><h2>Reportes de tu comunidad</h2><p class="admin-session">Sesión: <span id="admin-email"></span></p></div><div class="dashboard-actions"><button id="refresh-btn" type="button" class="button button-secondary button-small"><svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>Actualizar</button><button id="logout-btn" type="button" class="button button-ghost button-small">Cerrar sesión</button></div></div>
+        <dl class="metrics" aria-label="Resumen de reportes"><div class="metric"><dt>Total de reportes</dt><dd id="kpi-total">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-pending" aria-hidden="true"></span>Pendientes</dt><dd id="kpi-pendiente">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-progress" aria-hidden="true"></span>En proceso</dt><dd id="kpi-en_proceso">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-resolved" aria-hidden="true"></span>Resueltos</dt><dd id="kpi-resuelto">—</dd></div></dl>
+        <div class="filters" role="search" aria-label="Filtrar reportes"><div class="field"><label for="filter-property">Residencial</label><select id="filter-property"><option value="">Todos los residenciales</option></select></div><div class="field"><label for="filter-status">Estado</label><select id="filter-status"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="en_proceso">En proceso</option><option value="resuelto">Resuelto</option></select></div><div class="field field-search"><label for="filter-search">Buscar un reporte</label><div class="search-input"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg><input id="filter-search" type="search" maxlength="120" placeholder="Folio, nombre o casa" autocomplete="off"></div></div></div>
+        <div class="list-heading"><h3>Bandeja de reportes</h3><span id="list-count" class="list-count" role="status"></span></div>
+        <p id="admin-error" class="feedback feedback-error" role="alert" hidden></p>
+        <div id="admin-list" class="ticket-list" aria-live="polite"></div>
+        <nav class="pagination" aria-label="Páginas de reportes"><button id="prev-page" class="button button-secondary button-small" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg>Anterior</button><span id="page-label" class="page-label" role="status"></span><button id="next-page" class="button button-secondary button-small" type="button" disabled>Siguiente<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button></nav>
+        <details class="properties-management"><summary><span><svg class="icon" aria-hidden="true"><use href="#icon-home"></use></svg>Residenciales</span><span class="summary-caption">Administrar catálogo <span aria-hidden="true">+</span></span></summary><div class="properties-content"><div><h3>Residenciales que atendemos</h3><p>Los residenciales activos aparecen al crear un reporte.</p></div><form id="properties-form" class="properties-form"><div class="field"><label for="property-name">Nombre del residencial</label><input id="property-name" name="name" type="text" minlength="2" maxlength="120" placeholder="Nombre del residencial" required></div><button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>Agregar</button></form><p id="properties-error" class="feedback feedback-error" role="alert" hidden></p><div id="properties-list" class="properties-list" aria-live="polite"></div></div></details>
+      </div>
+    </section>
+
+    <div class="portal-signoff"><svg class="icon" aria-hidden="true"><use href="#icon-home"></use></svg><p>Nosotros nos hacemos cargo, tú vive bonito.</p><span>CAMO · Chihuahua</span></div>
+  </main>
+
+  <footer class="site-footer"><div class="footer-inner"><p>© 2026 CAMO Administración Residencial</p><div class="footer-links"><a href="tel:+526142161556">614 216 1556</a><a href="mailto:camocuu@hotmail.com">camocuu@hotmail.com</a><a href="#privacy-info">Privacidad de tus datos</a></div></div><details id="privacy-info" class="privacy-details"><summary>Sobre tus datos personales</summary><p>CAMO utiliza el nombre, teléfono, residencial y detalles que compartes para atender tu reporte y dar seguimiento. Evita incluir datos sensibles o información personal de terceros en la descripción. Para consultas sobre tus datos, escribe a <a href="mailto:camocuu@hotmail.com">camocuu@hotmail.com</a>.</p></details></footer>
+
+  <dialog id="update-dialog" class="portal-dialog" aria-labelledby="update-title" aria-describedby="update-help"><form id="update-form"><span class="section-marker" aria-hidden="true"><svg class="icon"><use href="#icon-chat"></use></svg></span><p class="eyebrow" id="update-folio"></p><h2 id="update-title">Actualizar reporte</h2><p id="update-help" class="dialog-description">Comparte el avance para mantener al residente al tanto.</p><div class="field"><label for="update-status">Estado del reporte</label><select id="update-status" name="status" required><option value="pendiente">Pendiente</option><option value="en_proceso">En proceso</option><option value="resuelto">Resuelto</option></select></div><div class="field"><label for="update-note">Nota de seguimiento</label><textarea id="update-note" name="note" rows="4" minlength="3" maxlength="2000" placeholder="Describe lo que se realizó o el siguiente paso." aria-describedby="update-note-hint" required></textarea><p id="update-note-hint" class="field-hint">Esta nota aparecerá en el seguimiento del residente.</p></div><p id="update-error" class="feedback feedback-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-update" class="button button-secondary" type="button">Cancelar</button><button class="button button-primary" type="submit">Guardar actualización</button></div></form></dialog>
+
+  <dialog id="archive-dialog" class="portal-dialog portal-dialog-small" aria-labelledby="archive-title" aria-describedby="archive-help"><form id="archive-form"><p class="eyebrow" id="archive-folio"></p><h2 id="archive-title">Archivar reporte</h2><p id="archive-help" class="dialog-description">El reporte dejará de aparecer en la bandeja activa y en la consulta del residente. Su información y seguimiento se conservarán en el archivo de CAMO.</p><p id="archive-error" class="feedback feedback-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-archive" class="button button-secondary" type="button">Cancelar</button><button class="button button-danger" type="submit">Archivar reporte</button></div></form></dialog>
+</body>
+</html>
