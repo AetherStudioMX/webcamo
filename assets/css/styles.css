@@ -1,0 +1,182 @@
+.gradient-teal {
+  background: linear-gradient(135deg, #00717a 0%, #005d65 100%);
+}
+.gradient-hero {
+  background: radial-gradient(circle at 10% 20%, rgba(0, 168, 181, 0.08) 0%, rgba(255, 255, 255, 0) 60%),
+              radial-gradient(circle at 90% 80%, rgba(0, 168, 181, 0.05) 0%, rgba(255, 255, 255, 0) 50%);
+}
+.badge-glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px -10px rgba(0, 168, 181, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Conserva la velocidad de la insignia animada del encabezado. */
+.animate-bounce.animate-bounce-slow {
+  animation-duration: 4s;
+}
+
+/* Las anclas y el foco quedan por debajo de la cabecera fija. */
+html {
+  scroll-padding-top: 6rem;
+  scroll-padding-bottom: 6rem;
+}
+
+/* Respeta el estado oculto aunque el elemento tenga una utilidad flex. */
+[hidden] {
+  display: none !important;
+}
+
+.quote-result {
+  overflow-wrap: anywhere;
+}
+
+.quote-result button {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.whatsapp-feedback {
+  padding: 1rem;
+  border: 1px solid #00717a;
+  border-radius: 0.75rem;
+  background: #e6f8f9;
+  color: #1a1e21;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.whatsapp-feedback a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #005d65;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
+}
+
+/* Texto de ayuda legible antes de introducir datos. */
+#contactForm input::placeholder,
+#contactForm textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+/* Menú con desplazamiento propio, también con el teléfono horizontal. */
+#mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100vh - var(--mobile-menu-top, 81px));
+  max-height: calc(100dvh - var(--mobile-menu-top, 81px));
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+body.mobile-menu-open > aside {
+  visibility: hidden;
+}
+
+/* Indicador común que no depende de las utilidades del CDN. */
+body :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #00717a;
+  outline-offset: 3px;
+}
+
+body .faq-btn:focus-visible {
+  outline-offset: -4px;
+}
+
+body > .bg-brand-dark a:focus-visible,
+footer a:focus-visible {
+  outline-color: #26c6da;
+}
+
+.faq-btn[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+#propertyTypeContainer .prop-type-btn {
+  min-width: 0;
+  padding-inline: 0.5rem;
+}
+
+#propertyTypeContainer .prop-type-btn span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.units-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.units-input {
+  width: 8rem;
+  max-width: 100%;
+}
+
+.units-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.field-error {
+  margin-top: 0.5rem;
+  color: #b91c1c;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+body [aria-invalid="true"] {
+  border-color: #b91c1c;
+}
+
+#sendCalcToWhatsApp:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 359px) {
+  #propertyTypeContainer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #cotizador .quote-result {
+    padding: 1rem;
+  }
+
+  .quote-result h4 {
+    font-size: 1.125rem;
+  }
+
+  .quote-result button {
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.scroll-smooth {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

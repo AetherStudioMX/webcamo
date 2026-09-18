@@ -1,0 +1,6 @@
+# Reglas para el dominio de producción de CAMO.
+# Incluye los rastreadores de buscadores y OAI-SearchBot.
+User-agent: *
+Allow: /
+
+Sitemap: https://camoadministracion.com.mx/sitemap.xml
