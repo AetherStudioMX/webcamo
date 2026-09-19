@@ -47,7 +47,7 @@
   }
 
   function createService(client) {
-    const ticketFields = 'id,folio,property_id,unit,resident_name,phone,category,urgency,status,description,created_at,updated_at,archived_at,property:camo_properties(name),events:camo_ticket_events(id,status,note,created_at)';
+    const ticketFields = 'id,folio,property_id,property_name,unit,resident_name,phone,category,urgency,status,description,created_at,updated_at,archived_at,events:camo_ticket_events(id,status,note,created_at)';
     async function result(request) {
       let response;
       try { response = await request; } catch { throw new Error(errorMessage()); }
@@ -67,7 +67,7 @@
       },
       async createTicket(values, requestId) {
         const args = { p_request_id: requestId };
-        for (const key of ['property_id','unit','resident_name','phone','category','urgency','description']) args['p_' + key] = String(values[key] || '').trim();
+        for (const key of ['property_name','unit','resident_name','phone','category','urgency','description']) args['p_' + key] = String(values[key] || '').trim();
         const receipt = (await result(client.rpc('camo_create_ticket', args))).data;
         if (!receipt?.folio) throw new Error(errorMessage());
         return receipt;
@@ -79,7 +79,7 @@
       async session() { return (await result(client.auth.getSession())).data.session; },
       async list({ property = '', status = '', search = '', page = 0, pageSize = 12 } = {}) {
         let query = client.from('camo_tickets').select(ticketFields, { count: 'exact' }).is('archived_at', null);
-        if (property) query = query.eq('property_id', property);
+        if (property.trim()) query = query.ilike('property_name', '%' + property.trim().replace(/[\\%_]/g, '\\$&') + '%');
         if (status) query = query.eq('status', status);
         if (search.trim()) query = query.ilike('folio', '%' + search.trim().replace(/^#/, '').replace(/[\\%_]/g, '\\$&') + '%');
         return result(query.order('created_at', { ascending: false }).order('id', { ascending: false }).range(page * pageSize, (page + 1) * pageSize - 1));

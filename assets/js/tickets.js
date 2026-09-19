@@ -91,35 +91,13 @@
     return list;
   }
 
-  function updatePropertySelectors() {
-    const active = propertyList.filter(property => property.active);
-    [[$('report-property'), active, 'Selecciona tu residencial'], [$('filter-property'), propertyList, 'Todos los residenciales']].forEach(([select, properties, label]) => {
-      const previous = select.value;
-      const first = node('option', '', label);
-      first.value = '';
-      select.replaceChildren(first);
-      properties.forEach(property => {
-        const option = node('option', '', property.name + (property.active ? '' : ' (inactivo)'));
-        option.value = property.id;
-        select.append(option);
-      });
-      if (properties.some(property => property.id === previous)) select.value = previous;
-    });
-    $('report-fields').disabled = active.length === 0 || submitting;
-    $('report-submit').disabled = active.length === 0 || submitting;
-    if (!active.length) feedback('report-error', 'Aún no hay residenciales disponibles. Comunícate con CAMO al 614 216 1556 para registrar tu incidencia.');
-    else feedback('report-error', '');
-  }
-
-  async function loadProperties(all = authorized) {
+  async function loadProperties() {
+    if (!authorized) return;
     const epoch = authEpoch;
-    const properties = await service.properties(all);
-    if (epoch !== authEpoch) return;
+    const properties = await service.properties(true);
+    if (epoch !== authEpoch || !authorized) return;
     propertyList = properties || [];
-    updatePropertySelectors();
-    $('connection-label').textContent = 'Atención residencial';
-    feedback('global-feedback', '');
-    if (authorized) renderProperties();
+    renderProperties();
   }
 
   function renderProperties() {
@@ -130,7 +108,7 @@
       const action = button(property.active ? 'Desactivar' : 'Activar', async () => {
         action.disabled = true;
         feedback('properties-error', '');
-        try { await service.setPropertyActive(property.id, !property.active); await loadProperties(true); }
+        try { await service.setPropertyActive(property.id, !property.active); await loadProperties(); }
         catch (error) { feedback('properties-error', message(error)); action.disabled = false; }
       }, 'button button-ghost button-small');
       row.append(action);
@@ -149,6 +127,8 @@
     feedback('report-error', '');
     const values = Object.fromEntries(new FormData($('report-form')));
     if (values.website) { feedback('report-error', 'No se pudo enviar el formulario. Recarga la página e inténtalo de nuevo.'); return; }
+    values.property_name = String(values.property_name || '').trim().replace(/\s+/g, ' ');
+    field('report-form', 'property_name').setCustomValidity(values.property_name.length < 2 || values.property_name.length > 120 ? 'Escribe el nombre de tu residencial, entre 2 y 120 caracteres.' : '');
     try { core.normalizePhone(values.phone); }
     catch (error) { field('report-form', 'phone').setCustomValidity(error.message); $('report-form').reportValidity(); return; }
     if (!$('report-form').reportValidity()) return;
@@ -162,8 +142,7 @@
       lastFolio = receipt.folio;
       $('success-folio').textContent = receipt.folio;
       $('success-date').textContent = date(receipt.created_at);
-      const property = propertyList.find(item => item.id === values.property_id)?.name || '';
-      $('success-whatsapp').href = core.whatsAppUrl(config.adminWhatsApp || '526142161556', `Hola, registré la incidencia #${receipt.folio} en ${property}, ${values.unit}. Categoría: ${core.categories[values.category]}. ${values.description}`);
+      $('success-whatsapp').href = core.whatsAppUrl(config.adminWhatsApp || '526142161556', `Hola, registré la incidencia #${receipt.folio} en ${values.property_name}, ${values.unit}. Categoría: ${core.categories[values.category]}. ${values.description}`);
       $('success-whatsapp').rel = 'noopener noreferrer';
       $('report-form').hidden = true;
       $('report-success').hidden = false;
@@ -176,7 +155,7 @@
     finally {
       submitting = false;
       busy('report-form', false);
-      $('report-fields').disabled = propertyList.filter(item => item.active).length === 0;
+      $('report-fields').disabled = false;
       $('report-submit').textContent = 'Registrar incidencia y generar folio';
     }
   });
@@ -223,6 +202,12 @@
     $('admin-gate').hidden = false;
     $('admin-list').replaceChildren();
     $('properties-list').replaceChildren();
+    propertyList = [];
+    $('properties-form').reset();
+    ['filter-property', 'filter-status', 'filter-search'].forEach(id => { $(id).value = ''; });
+    ['update-form', 'archive-form'].forEach(id => { $(id).reset(); });
+    ['update-folio', 'archive-folio', 'list-count', 'page-label'].forEach(id => { $(id).textContent = ''; });
+    feedback('properties-error', '');
     $('admin-email').textContent = '';
     ['total', ...Object.keys(core.statuses)].forEach(key => { $('kpi-' + key).textContent = '—'; });
     ['update-dialog', 'archive-dialog'].forEach(id => { if ($(id).open) $(id).close(); });
@@ -257,7 +242,7 @@
       $('admin-email').textContent = session.user.email;
       $('admin-gate').hidden = true;
       $('admin-dashboard').hidden = false;
-      await Promise.all([loadProperties(true), loadAdmin()]);
+      await Promise.all([loadProperties(), loadAdmin()]);
       if (epoch === authEpoch && authorized) refreshTimer = setInterval(() => {
         if (!document.hidden && !$('view-admin').hidden && !$('update-dialog').open && !$('archive-dialog').open) loadAdmin();
       }, 60000);
@@ -278,7 +263,7 @@
   $('logout-btn').addEventListener('click', async () => {
     ++authEpoch;
     clearAdmin();
-    try { await service.signOut(); await loadProperties(false); }
+    try { await service.signOut(); }
     catch (error) { feedback('login-error', 'No se pudo cerrar la sesión por completo. Revisa la conexión y vuelve a ingresar para cerrarla.'); }
   });
 
@@ -288,7 +273,7 @@
     header.append(node('h3', 'ticket-folio', '#' + ticket.folio), badge(ticket.status));
     const category = node('div', 'ticket-top');
     category.append(node('h4', '', core.categories[ticket.category] || ticket.category), badge(ticket.urgency, 'urgency'));
-    card.append(header, node('p', 'ticket-meta', (ticket.property?.name || '') + ' · ' + ticket.unit + ' · ' + date(ticket.created_at)), category, node('p', 'ticket-description', ticket.description), node('p', 'ticket-meta', ticket.resident_name + ' · +' + ticket.phone));
+    card.append(header, node('p', 'ticket-meta', (ticket.property_name || '') + ' · ' + ticket.unit + ' · ' + date(ticket.created_at)), category, node('p', 'ticket-description', ticket.description), node('p', 'ticket-meta', ticket.resident_name + ' · +' + ticket.phone));
     const events = [...(ticket.events || [])].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
     const latest = events[0]?.note || 'En espera de revisión.';
     const details = node('details', 'ticket-detail');
@@ -296,7 +281,7 @@
     card.append(node('p', 'timeline-note', latest), details);
     const actions = node('div', 'ticket-actions');
     for (const [status, label] of Object.entries(core.statuses)) actions.append(button(label, () => openUpdate(ticket, status)));
-    const text = `Hola ${ticket.resident_name}, le escribe la administración de CAMO. Su reporte #${ticket.folio} sobre ${core.categories[ticket.category]} en ${ticket.property?.name || ''} se encuentra: ${core.statuses[ticket.status]}. Nota: ${latest}`;
+    const text = `Hola ${ticket.resident_name}, le escribe la administración de CAMO. Su reporte #${ticket.folio} sobre ${core.categories[ticket.category]} en ${ticket.property_name || ''} se encuentra: ${core.statuses[ticket.status]}. Nota: ${latest}`;
     actions.append(externalLink('Notificar por WhatsApp', core.whatsAppUrl('+' + ticket.phone, text)), button('Archivar', () => {
       selectedTicket = ticket;
       $('archive-folio').textContent = '#' + ticket.folio;
@@ -339,15 +324,15 @@
   $('refresh-btn').addEventListener('click', () => loadAdmin());
   $('prev-page').addEventListener('click', () => { page = Math.max(0, page - 1); loadAdmin(); });
   $('next-page').addEventListener('click', () => { page++; loadAdmin(); });
-  ['filter-property', 'filter-status'].forEach(id => $(id).addEventListener('change', () => { page = 0; loadAdmin(); }));
+  $('filter-status').addEventListener('change', () => { page = 0; loadAdmin(); });
   let searchTimer;
-  $('filter-search').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { page = 0; loadAdmin(); }, 250); });
+  ['filter-search', 'filter-property'].forEach(id => $(id).addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { page = 0; loadAdmin(); }, 250); }));
   $('properties-form').addEventListener('submit', async event => {
     event.preventDefault();
     if (!authorized || $('properties-form').getAttribute('aria-busy') === 'true') return;
     busy('properties-form', true);
     feedback('properties-error', '');
-    try { await service.addProperty(field('properties-form', 'name').value); $('properties-form').reset(); await loadProperties(true); }
+    try { await service.addProperty(field('properties-form', 'name').value); $('properties-form').reset(); await loadProperties(); }
     catch (error) { feedback('properties-error', message(error)); }
     finally { busy('properties-form', false); }
   });
@@ -391,13 +376,16 @@
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storage: window.sessionStorage, storageKey: 'camo-admin-auth' }
       });
       service = core.createService(client);
+      $('report-fields').disabled = false;
+      $('report-submit').disabled = false;
+      $('connection-label').textContent = 'Atención residencial';
+      feedback('global-feedback', '');
       client.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_OUT') { ++authEpoch; clearAdmin(); }
         else if (event === 'SIGNED_IN' && $('login-form').getAttribute('aria-busy') !== 'true') setTimeout(() => syncSession(session), 0);
       });
       const session = await service.session();
       await syncSession(session);
-      await loadProperties(authorized);
     } catch (error) {
       $('connection-label').textContent = 'Servicio no disponible';
       feedback('global-feedback', 'No pudimos conectar con atención residencial. Recarga la página para reintentar o llama al 614 216 1556.');
