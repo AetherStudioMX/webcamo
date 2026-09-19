@@ -85,13 +85,13 @@
         return result(query.order('created_at', { ascending: false }).order('id', { ascending: false }).range(page * pageSize, (page + 1) * pageSize - 1));
       },
       async metrics() {
-        const keys = ['total', ...Object.keys(statuses)];
+        const keys = Object.keys(statuses);
         const counts = await Promise.all(keys.map(async key => {
-          let query = client.from('camo_tickets').select('id', { count: 'exact', head: true }).is('archived_at', null);
-          if (key !== 'total') query = query.eq('status', key);
+          const query = client.from('camo_tickets').select('id', { count: 'exact', head: true }).is('archived_at', null).eq('status', key);
           return (await result(query)).count;
         }));
-        return Object.fromEntries(keys.map((key, index) => [key, counts[index]]));
+        const byStatus = Object.fromEntries(keys.map((key, index) => [key, counts[index]]));
+        return { total: byStatus.pendiente + byStatus.en_proceso, ...byStatus };
       },
       async update(ticket, status, note) { return (await result(client.rpc('camo_update_ticket', { p_ticket_id: ticket.id, p_status: status, p_note: note.trim(), p_expected_updated_at: ticket.updated_at }))).data; },
       async archive(ticket) { return (await result(client.rpc('camo_archive_ticket', { p_ticket_id: ticket.id, p_expected_updated_at: ticket.updated_at }))).data; },

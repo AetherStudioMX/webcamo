@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="assets/css/tickets.css">
   <script src="assets/js/vendor/supabase.js" defer></script>
   <script src="assets/js/config.js" defer></script>
-  <script src="assets/js/tickets-core.js" defer></script>
+  <script src="assets/js/tickets-core.js?v=20260919-activos" defer></script>
   <script src="assets/js/tickets.js" defer></script>
 </head>
 <body>
@@ -197,7 +197,7 @@
 
       <div id="admin-dashboard" class="admin-dashboard" hidden>
         <div class="dashboard-heading"><div><p class="eyebrow">Administración</p><h2>Reportes de tu comunidad</h2><p class="admin-session">Sesión: <span id="admin-email"></span></p></div><div class="dashboard-actions"><button id="refresh-btn" type="button" class="button button-secondary button-small"><svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>Actualizar</button><button id="logout-btn" type="button" class="button button-ghost button-small">Cerrar sesión</button></div></div>
-        <dl class="metrics" aria-label="Resumen de reportes"><div class="metric"><dt>Total de reportes</dt><dd id="kpi-total">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-pending" aria-hidden="true"></span>Pendientes</dt><dd id="kpi-pendiente">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-progress" aria-hidden="true"></span>En proceso</dt><dd id="kpi-en_proceso">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-resolved" aria-hidden="true"></span>Resueltos</dt><dd id="kpi-resuelto">—</dd></div></dl>
+        <dl class="metrics" aria-label="Resumen de reportes"><div class="metric"><dt>Total de reportes activos</dt><dd id="kpi-total">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-pending" aria-hidden="true"></span>Pendientes</dt><dd id="kpi-pendiente">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-progress" aria-hidden="true"></span>En proceso</dt><dd id="kpi-en_proceso">—</dd></div><div class="metric"><dt><span class="status-dot status-dot-resolved" aria-hidden="true"></span>Resueltos</dt><dd id="kpi-resuelto">—</dd></div></dl>
         <div class="filters" role="search" aria-label="Filtrar reportes"><div class="field"><label for="filter-property">Residencial</label><select id="filter-property"><option value="">Todos los residenciales</option></select></div><div class="field"><label for="filter-status">Estado</label><select id="filter-status"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="en_proceso">En proceso</option><option value="resuelto">Resuelto</option></select></div><div class="field field-search"><label for="filter-search">Buscar un reporte</label><div class="search-input"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg><input id="filter-search" type="search" maxlength="120" placeholder="Folio, nombre o casa" autocomplete="off"></div></div></div>
         <div class="list-heading"><h3>Bandeja de reportes</h3><span id="list-count" class="list-count" role="status"></span></div>
         <p id="admin-error" class="feedback feedback-error" role="alert" hidden></p>
