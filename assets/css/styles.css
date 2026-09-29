@@ -1,6 +1,25 @@
 .gradient-teal {
   background: linear-gradient(135deg, #00717a 0%, #005d65 100%);
 }
+
+/* Identifica el servicio sin depender de la letra pequeña del logotipo. */
+.hero-service {
+  color: #00717a;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.hero-service-location {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0;
+}
 .gradient-hero {
   background: radial-gradient(circle at 10% 20%, rgba(0, 168, 181, 0.08) 0%, rgba(255, 255, 255, 0) 60%),
               radial-gradient(circle at 90% 80%, rgba(0, 168, 181, 0.05) 0%, rgba(255, 255, 255, 0) 50%);
